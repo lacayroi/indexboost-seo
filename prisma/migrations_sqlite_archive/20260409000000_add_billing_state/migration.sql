@@ -1,0 +1,3 @@
+ALTER TABLE "Shop" ADD COLUMN "billingStatus" TEXT NOT NULL DEFAULT 'inactive';
+ALTER TABLE "Shop" ADD COLUMN "subscriptionId" TEXT;
+ALTER TABLE "Shop" ADD COLUMN "trialDays" INTEGER NOT NULL DEFAULT 0;

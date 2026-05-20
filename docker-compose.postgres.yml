@@ -1,0 +1,18 @@
+services:
+  postgres:
+    image: postgres:16
+    container_name: indexboost-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: indexboost_seo
+      POSTGRES_USER: indexboost
+      POSTGRES_PASSWORD: indexboost_dev_password
+    ports:
+      - "5433:5432"
+    volumes:
+      - ../indexboost-postgres-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U indexboost -d indexboost_seo"]
+      interval: 5s
+      timeout: 5s
+      retries: 20

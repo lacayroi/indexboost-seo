@@ -1,0 +1,68 @@
+# Learn more about configuring your app at https://shopify.dev/docs/apps/tools/cli/configuration
+
+client_id = "67c4065dfe55fbf0c87f45720707943d"
+name = "IndexBoost SEO"
+# Must match SHOPIFY_APP_URL and must not be an admin.shopify.com URL.
+application_url = "https://app.indexboostseo.com"
+embedded = true
+
+[build]
+automatically_update_urls_on_dev = true
+include_config_on_deploy = true
+
+[webhooks]
+api_version = "2026-04"
+
+  [[webhooks.subscriptions]]
+  topics = [ "app/uninstalled" ]
+  uri = "/webhooks/app/uninstalled"
+
+  [[webhooks.subscriptions]]
+  topics = [ "app/scopes_update" ]
+  uri = "/webhooks/app/scopes_update"
+
+  [[webhooks.subscriptions]]
+  topics = [ "products/create", "products/update" ]
+  uri = "/webhooks/products/create-update"
+
+  [[webhooks.subscriptions]]
+  topics = [ "products/delete" ]
+  uri = "/webhooks/products/delete"
+
+  [[webhooks.subscriptions]]
+  topics = [ "collections/create", "collections/update" ]
+  uri = "/webhooks/collections/create-update"
+
+  [[webhooks.subscriptions]]
+  topics = [ "collections/delete" ]
+  uri = "/webhooks/collections/delete"
+
+  # Mandatory compliance webhooks for public apps
+  [[webhooks.subscriptions]]
+  uri = "/webhooks/customers/data_request"
+  compliance_topics = [ "customers/data_request" ]
+
+  [[webhooks.subscriptions]]
+  uri = "/webhooks/customers/redact"
+  compliance_topics = [ "customers/redact" ]
+
+  [[webhooks.subscriptions]]
+  uri = "/webhooks/shop/redact"
+  compliance_topics = [ "shop/redact" ]
+
+[access_scopes]
+# Learn more at https://shopify.dev/docs/apps/tools/cli/configuration#access_scopes
+scopes = "read_products,write_products,read_content,write_content,read_online_store_navigation,write_online_store_navigation,read_themes,write_themes"
+
+[auth]
+redirect_urls = [ "https://app.indexboostseo.com/auth/callback" ]
+
+[app_proxy]
+# Storefront path: /apps/indexboost/*
+# App target: https://app.indexboostseo.com/app-proxy/*
+url = "https://app.indexboostseo.com/app-proxy"
+subpath = "indexboost"
+prefix = "apps"
+
+[pos]
+embedded = false

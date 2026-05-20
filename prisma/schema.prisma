@@ -1,0 +1,90 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Session {
+  id                  String    @id
+  shop                String
+  state               String
+  isOnline            Boolean   @default(false)
+  scope               String?
+  expires             DateTime?
+  accessToken         String
+  userId              BigInt?
+  firstName           String?
+  lastName            String?
+  email               String?
+  accountOwner        Boolean   @default(false)
+  locale              String?
+  collaborator        Boolean?  @default(false)
+  emailVerified       Boolean?  @default(false)
+  refreshToken        String?
+  refreshTokenExpires DateTime?
+
+  @@index([shop])
+}
+
+model Shop {
+  id                String       @id @default(cuid())
+  domain            String       @unique
+  googleCredentials String?      // Google Service Account JSON (stored as string)
+  indexNowKey       String?      // Auto-generated hex key
+  autoIndexGoogle   Boolean      @default(true)
+  autoIndexNow      Boolean      @default(true)
+  indexProducts     Boolean      @default(true)
+  indexCollections  Boolean      @default(true)
+  indexPages        Boolean      @default(true)
+  indexBlogs        Boolean      @default(true)
+  plan              String       @default("free")
+  billingStatus     String       @default("inactive") // inactive, pending, active, cancelled
+  subscriptionId    String?
+  trialDays         Int          @default(0)
+  settings          String?      // JSON: engine toggles, ai credits, etc.
+  dailyGoogleUsed   Int          @default(0)
+  quotaResetAt      DateTime     @default(now())
+  submissions       Submission[]
+  queueItems        QueueItem[]
+  createdAt         DateTime     @default(now())
+  updatedAt         DateTime     @updatedAt
+}
+
+model Submission {
+  id          String   @id @default(cuid())
+  shopId      String
+  url         String
+  contentType String   // product, collection, blog_post, page
+  engine      String   // google, indexnow
+  action      String   // update, delete
+  status      String   // success, failed
+  statusCode  Int?
+  errorMsg    String?
+  createdAt   DateTime @default(now())
+  shop        Shop     @relation(fields: [shopId], references: [id], onDelete: Cascade)
+
+  @@index([shopId, createdAt])
+  @@index([status])
+}
+
+model QueueItem {
+  id          String   @id @default(cuid())
+  shopId      String
+  url         String
+  contentType String
+  engine      String   // google, indexnow
+  action      String   @default("update")
+  priority    Int      @default(0)
+  attempts    Int      @default(0)
+  maxAttempts Int      @default(3)
+  nextRetryAt DateTime @default(now())
+  createdAt   DateTime @default(now())
+  shop        Shop     @relation(fields: [shopId], references: [id], onDelete: Cascade)
+
+  @@index([shopId, nextRetryAt])
+  @@index([engine, nextRetryAt])
+  @@index([shopId, url, engine])
+}
