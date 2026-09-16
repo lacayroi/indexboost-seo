@@ -8,7 +8,7 @@ Versioning: [Semantic Versioning](https://semver.org/spec/v2.0.0.html)
 
 ## [1.0.0] — 2026-05-20
 
-Initial public release to Shopify App Store.
+Initial v1.0.0 release of IndexBoost SEO.
 
 ### Features
 
